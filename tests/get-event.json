@@ -1,0 +1,11 @@
+{
+    "pathParameters": {
+      "timestamp": "1552790056692"
+    },
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "admin"
+      }
+    }
+  }
+  

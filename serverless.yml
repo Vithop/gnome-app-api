@@ -13,13 +13,25 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
-  region: us-east-1
+  region: us-west-2
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
   # the following line. Also, make sure to not
   # commit your env.yml.
   #
   #environment: ${file(env.yml):${self:provider.stage}}
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:us-west-2:252435462758:table/TestGnomeDB/stream/2019-03-15T00:03:36.513"
 
 functions:
   hello:
@@ -28,3 +40,15 @@ functions:
       - http:
           path: hello
           method: get
+  get:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /notes/{id}
+    # - method: GET request
+    handler: get.main
+    events:
+      - http:
+          path: gnome/{timestamp}
+          method: get
+          cors: true
+          authorizer: aws_iam
+
